@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class Product {
+public class Product implements ProductInterface {
     private String name;
     private String description;
     private Double price;
