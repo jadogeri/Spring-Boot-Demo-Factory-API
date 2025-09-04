@@ -37,7 +37,6 @@ public class Product {
                 "'description': '" + this.description + "',\n" +
                 "'price': '" + this.price + "'\n" +
                 "}";
-
     }
 
 }
