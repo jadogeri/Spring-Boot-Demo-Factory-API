@@ -1,12 +1,19 @@
 package com.josephadogeridev.factory.product;
 
-public class Product {
 
+
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+
+public class Product {
     private String name;
     private String description;
-    private double price;
+    private Double price;
 
-    public Product(String name, String description, double price) {
+    public Product(String name, String description, Double price) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -23,20 +30,22 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
     @Override
     public String toString() {
 
-        return "{\n" +
-                "'name': '" + this.name + "',\n" +
-                "'description': '" + this.description + "',\n" +
-                "'price': '" + this.price + "'\n" +
-                "}";
+       JsonObject productJson = Json.createObjectBuilder()
+                .add("name", this.name)
+                .add("description", this.description)
+                .add("price", this.price)
+                .build();
+
+        return productJson.toString();
     }
 
 }
