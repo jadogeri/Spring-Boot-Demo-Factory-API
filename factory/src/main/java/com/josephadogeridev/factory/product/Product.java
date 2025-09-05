@@ -9,12 +9,11 @@ import jakarta.persistence.*;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-@Entity(name = "Products")
+@Entity(name = "Product")
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(name = "product_name_unique" , columnNames = "name")
         }
-
 )
 public class Product implements ProductInterface {
 
@@ -31,7 +30,7 @@ public class Product implements ProductInterface {
 
     )
     private Long id;
-    @Column( updatable = false, nullable = false, columnDefinition = "TEXT", unique = true)
+    @Column(updatable = false, nullable = false, columnDefinition = "TEXT", unique = true)
     private String name;
     @Column(updatable = true, nullable = false, columnDefinition = "TEXT")
     private String description;
@@ -77,17 +76,17 @@ public class Product implements ProductInterface {
                 .add("price", this.price)
                 .build();
 
-        // Build a Gson instance with pretty printing enabled
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-
-        // Convert the JsonObject to a pretty-printed JSON string
-        String prettyJson = gson.toJson(productJson);
-
-        // Print the pretty-printed JSON
+//        // Build a Gson instance with pretty printing enabled
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//
+//        // Convert the JsonObject to a pretty-printed JSON string
+//        String prettyJson = gson.toJson(productJson);
+//
+//        // Print the pretty-printed JSON
         System.out.println(productJson.toString());
-
-        System.out.println(prettyJson);
+//
+//        System.out.println(prettyJson);
 
         return productJson.toString();
 
