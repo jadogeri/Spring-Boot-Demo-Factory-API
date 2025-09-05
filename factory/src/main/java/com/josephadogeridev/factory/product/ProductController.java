@@ -36,31 +36,37 @@ public class ProductController {
 //    }
 
     @GetMapping
-    public List<Product> getEmployees() {
+    public List<Product> getProducts() {
 
         return this.productList;
 
     }
     @GetMapping(path = "{productId}")
-    public List<Product> getEmployee() {
+    public List<Product> getProducts(@PathVariable("productId") String productId    ) {
 
         return this.productList;
 
     }
     @PostMapping
-    public List<Product> registerNewEmployee(@RequestBody Product product) {
+    public List<Product> addProduct(@RequestBody Product product) {
         return this.productList;
 
     }
 
     @DeleteMapping(path = "{productId}")
-    public List<Product> deleteEmployee(@PathVariable("productId") Long productId) {
+    public List<Product> deleteProduct(@PathVariable("productId") Long productId) {
+        return this.productList;
+
+    }
+
+    @DeleteMapping
+    public List<Product> deleteProducts() {
         return this.productList;
 
     }
 
     @PutMapping(path = "{productId}")
-    public List<Product> updateEmployee(
+    public List<Product> updateProduct(
             @PathVariable("productId") Long employeeId,
             @RequestBody(required = false) Product product) {
         return this.productList;
