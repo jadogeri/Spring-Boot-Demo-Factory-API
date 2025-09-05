@@ -1,19 +1,51 @@
 package com.josephadogeridev.factory.product;
 
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
 
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.NotBlank;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import jakarta.persistence.*;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+@Entity(name = "Products")
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(name = "product_name_unique" , columnNames = "name")
+        }
+
+)
 public class Product implements ProductInterface {
+
+    @Id
+    @SequenceGenerator(
+            name = "product_sequence",
+            sequenceName = "product_sequence",
+            allocationSize = 1
+    )
+
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "product_sequence"
+
+    )
+    private Long id;
+    @Column( updatable = false, nullable = false, columnDefinition = "TEXT", unique = true)
     private String name;
+    @Column(updatable = true, nullable = false, columnDefinition = "TEXT")
     private String description;
+    @Column(updatable = true, nullable = false, columnDefinition = "DOUBLE")
     private Double price;
 
+    public Product() {  }
     public Product(String name, String description, Double price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+    public Product(Long id,String name, String description, Double price) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -45,7 +77,21 @@ public class Product implements ProductInterface {
                 .add("price", this.price)
                 .build();
 
-        return productJson.toString();
-    }
+        // Build a Gson instance with pretty printing enabled
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+
+        // Convert the JsonObject to a pretty-printed JSON string
+        String prettyJson = gson.toJson(productJson);
+
+        // Print the pretty-printed JSON
+        System.out.println(productJson.toString());
+
+        System.out.println(prettyJson);
+
+        return productJson.toString();
+
+
+    }
 }
+
