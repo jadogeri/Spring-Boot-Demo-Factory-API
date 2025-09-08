@@ -16,15 +16,15 @@ public class ProductService {
     }
 
 
-    public Product saveEntity(Product product) {
+    public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 
-    public List<Product> findAllEntities() {
+    public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
 
-    public Product findEntityById(Long id) {
+    public Product findProductById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
 
