@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/factories")
+@RequestMapping("/api/v1/products")
 //@XmlRootElement(name = "employee")
 
 public class ProductController {
@@ -38,18 +38,18 @@ public class ProductController {
     @GetMapping
     public List<Product> getProducts() {
 
-        return this.productList;
+        return this.productService.findAllProducts();
 
     }
     @GetMapping(path = "{productId}")
     public List<Product> getProducts(@PathVariable("productId") String productId    ) {
-
         return this.productList;
-
     }
+
     @PostMapping
-    public List<Product> addProduct(@RequestBody Product product) {
-        return this.productList;
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+        System.out.println("variables in product" + product);
+        return this.productService.createProduct(product);
 
     }
 

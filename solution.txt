@@ -1,0 +1,29 @@
+3. REST API Setup
+Let’s define a simple REST API for our Person class:
+
+
+AD
+@PostMapping(
+  value = "/createPerson", consumes = "application/json", produces = "application/json")
+public Person createPerson(@RequestBody Person person) {
+    return personService.saveUpdatePerson(person);
+}
+
+@PostMapping(
+  value = "/updatePerson", consumes = "application/json", produces = "application/json")
+public Person updatePerson(@RequestBody Person person, HttpServletResponse response) {
+    response.setHeader("Location", ServletUriComponentsBuilder.fromCurrentContextPath()
+      .path("/findPerson/" + person.getId()).toUriString());
+
+    return personService.saveUpdatePerson(person);
+}
+Copy
+Remember, we want to post the data in JSON format. In order to that, we added the consumes attribute in the @PostMapping annotation with the value of “application/json” for both methods.
+
+Similarly, we set the produces attribute to “application/json” to tell Spring that we want the response body in JSON format.
+
+We annotated the person parameter with the @RequestBody annotation for both methods. This will tell Spring that the person object will be bound to the body of the HTTP request.
+
+Lastly, both methods return a Person object that will be bound to the response body. Let’s note that we’ll annotate our API class with @RestController to annotate all API methods with a hidden @ResponseBody annotation.
+
+4. Using RestTemplate

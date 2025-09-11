@@ -6,6 +6,8 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -31,6 +33,7 @@ public class Product implements ProductInterface {
     )
     private Long id;
     @Column(updatable = false, nullable = false, columnDefinition = "TEXT", unique = true)
+    @NotBlank(message = "The name is required.")
     private String name;
     @Column(updatable = true, nullable = false, columnDefinition = "TEXT")
     private String description;
@@ -38,6 +41,7 @@ public class Product implements ProductInterface {
     private Double price;
 
     public Product() {  }
+
     public Product(String name, String description, Double price) {
         this.name = name;
         this.description = description;
@@ -49,6 +53,7 @@ public class Product implements ProductInterface {
         this.description = description;
         this.price = price;
     }
+
     public String getName() {
         return name;
     }
