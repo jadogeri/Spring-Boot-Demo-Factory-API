@@ -1,6 +1,13 @@
 package com.josephadogeridev.factory.product;
 
+
+
+import com.josephadogeridev.factory.utils.NumberChecker;
+import com.josephadogeridev.factory.exceptions.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,12 +48,13 @@ public class ProductController {
         return this.productService.findAllProducts();
 
     }
-    @GetMapping(path = "{productId}")
-    public List<Product> getProducts(@PathVariable("productId") String productId    ) {
-        return this.productList;
+    @GetMapping(path = "{productId}" )
+    public Product getProduct(@PathVariable("productId") String productId    ) {
+        Long id = Long.valueOf(productId);
+        return this.productService.findProductById(id);
     }
 
-    @PostMapping
+    @PostMapping( consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
         System.out.println("variables in product" + product);
         return this.productService.createProduct(product);
@@ -54,8 +62,14 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "{productId}")
-    public List<Product> deleteProduct(@PathVariable("productId") Long productId) {
-        return this.productList;
+    public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId) {
+        System.out.println("variables in product" + productId);
+        if (!NumberChecker.isNumeric(productId)){
+            ErrorResponse response = new ErrorResponse("Something went wrong!", HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        return this.productService.deleteProduct(Long.valueOf(productId));
 
     }
 
