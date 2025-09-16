@@ -29,12 +29,7 @@ public class ProductController {
     @Autowired
     ProductController(ProductService productService){
         this.productService = productService;
-        this.productList = new ArrayList<Product>();
-        this.productList.add(new Product("oil","oil refinery",20.5));
-        this.productList.add(new Product("rack","rack list refinery",20.5));
-        this.productList.add(new Product("jetfuel","jet fuel refinery",20.5));
-        this.productList.add(new Product("petrol","car oil refinery",20.5));
-    }
+   }
 
 //    @PostMapping
 //    public ResponseEntity<?> creatProduct(@RequestBody Product product) {
@@ -49,7 +44,7 @@ public class ProductController {
 
     }
     @GetMapping(path = "{productId}" )
-    public Product getProduct(@PathVariable("productId") String productId    ) {
+    public ResponseEntity<?> getProduct(@PathVariable("productId") String productId    ) {
         Long id = Long.valueOf(productId);
         return this.productService.findProductById(id);
     }
@@ -65,7 +60,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId) {
         System.out.println("variables in product" + productId);
         if (!NumberChecker.isNumeric(productId)){
-            ErrorResponse response = new ErrorResponse("Something went wrong!", HttpStatus.BAD_REQUEST.value());
+            ErrorResponse response = new ErrorResponse("productId " + productId + "is not valid", HttpStatus.BAD_REQUEST.value());
 
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
@@ -74,16 +69,20 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public List<Product> deleteProducts() {
-        return this.productList;
-
+    public ResponseEntity<?> deleteProducts() {
+        return this.productService.deleteAllProducts();
     }
 
     @PutMapping(path = "{productId}")
-    public List<Product> updateProduct(
-            @PathVariable("productId") Long employeeId,
-            @RequestBody(required = false) Product product) {
-        return this.productList;
+    public  ResponseEntity<?> updateProduct(
+            @PathVariable("productId") String productId,
+            @RequestBody Product product) {
+        if (!NumberChecker.isNumeric(productId)){
+            ErrorResponse response = new ErrorResponse("productId " + productId + "is not valid", HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        return this.productService.updateProduct(Long.valueOf(productId), product);
 
     }
 }
