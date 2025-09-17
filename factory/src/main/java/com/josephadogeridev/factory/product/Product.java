@@ -96,9 +96,9 @@ public class Product implements ProductInterface {
     public String toString() {
 
        JsonObject productJson = Json.createObjectBuilder()
-                .add("name", this.name)
-                .add("description", this.description)
-                .add("price", this.price)
+               .add("name", this.name)
+               .add("description", this.description)
+               .add("price", this.price)
                .add("createdDate", String.valueOf(this.getCreatedDate()))
                .add("lastModifiedDate", String.valueOf(this.getLastModifiedDate()))
                .build();

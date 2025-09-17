@@ -122,6 +122,7 @@ public class ProductService {
 
         }
         oldProduct.setId(productId);
+        oldProduct.setLastModifiedDate(LocalDateTime.now());
         System.out.println("product to modify with new fields: " + oldProduct.toString());
 
         Product modifiedProduct = productRepository.save(oldProduct);
