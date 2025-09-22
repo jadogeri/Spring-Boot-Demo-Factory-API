@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -28,19 +29,21 @@ public class Product implements ProductInterface {
             sequenceName = "product_sequence",
             allocationSize = 1
     )
+    @GenericGenerator(name = "product_sequence", strategy = "native")
 
     @GeneratedValue(
             strategy = SEQUENCE,
             generator = "product_sequence"
 
     )
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
     @Column(nullable = false, columnDefinition = "TEXT", unique = true)
     @NotBlank(message = "The name is required.")
     private String name;
     @Column(updatable = true, nullable = false, columnDefinition = "TEXT")
     private String description;
-    @Column(updatable = true, nullable = false, columnDefinition = "DOUBLE")
+    @Column(updatable = true, nullable = false)
     private Double price;
     @Column(updatable = false)
     @CreatedDate
@@ -95,13 +98,13 @@ public class Product implements ProductInterface {
     @Override
     public String toString() {
 
-       JsonObject productJson = Json.createObjectBuilder()
-               .add("name", this.name)
-               .add("description", this.description)
-               .add("price", this.price)
-               .add("createdDate", String.valueOf(this.getCreatedDate()))
-               .add("lastModifiedDate", String.valueOf(this.getLastModifiedDate()))
-               .build();
+        JsonObject productJson = Json.createObjectBuilder()
+                .add("name", this.name)
+                .add("description", this.description)
+                .add("price", this.price)
+                .add("createdDate", String.valueOf(this.getCreatedDate()))
+                .add("lastModifiedDate", String.valueOf(this.getLastModifiedDate()))
+                .build();
 
 //        // Build a Gson instance with pretty printing enabled
 //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -120,4 +123,3 @@ public class Product implements ProductInterface {
 
     }
 }
-
