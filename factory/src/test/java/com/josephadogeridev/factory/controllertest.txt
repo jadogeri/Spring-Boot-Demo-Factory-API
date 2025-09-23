@@ -1,0 +1,345 @@
+https://www.google.com/search?q=%40WebMvcTest%28MyController.class%29%0D%0A+crud+example&sca_esv=d43255849d412494&sxsrf=AE3TifPujAnsgKIyKA71btlDGYRFc5tCBQ%3A1758661853431&ei=3QzTaN2NGoSGwbkPnMOr4A0&ved=0ahUKEwid8Lb45e-PAxUEQzABHZzhCtwQ4dUDCBA&uact=5&oq=%40WebMvcTest%28MyController.class%29%0D%0A+crud+example&gs_lp=Egxnd3Mtd2l6LXNlcnAiLUBXZWJNdmNUZXN0KE15Q29udHJvbGxlci5jbGFzcykKIGNydWQgZXhhbXBsZTIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYR0jcyQFQt6EBWJzHAXAGeAGQAQCYAQCgAQCqAQC4AQPIAQD4AQL4AQGYAgagAg2YAwCIBgGQBgSSBwE2oAcAsgcAuAcAwgcDMS41yAcJ&sclient=gws-wiz-serp
+
+
+
+@WebMvcTest is a testing annotation used to test a Spring MVC controller in isolation by loading only the web layer of the application. For a CRUD example, this means you will test the controller's request mappings (e.g., GET, POST, PUT, DELETE) without starting the full application context or connecting to a real database. The service and repository layers that the controller depends on are typically mocked.
+Example setup
+
+1. Define the model
+A simple Book class is used for the CRUD operations.
+src/main/java/com/example/demo/Book.java
+/////////////////////////////////////////////////
+package com.example.demo;
+
+public class Book {
+
+    private Long id;
+    private String title;
+    private String author;
+
+    // Constructors, Getters, and Setters
+    public Book() {}
+
+    public Book(Long id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+}
+
+2. Create the service interface and implementation
+The controller will depend on a BookService to perform the business logic.
+src/main/java/com/example/demo/BookService.java
+
+package com.example.demo;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface BookService {
+    List<Book> findAll();
+    Optional<Book> findById(Long id);
+    Book save(Book book);
+    void deleteById(Long id);
+}
+
+src/main/java/com/example/demo/BookServiceImpl.java
+
+
+package com.example.demo;
+
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Service
+public class BookServiceImpl implements BookService {
+
+    private final List<Book> books = new CopyOnWriteArrayList<>();
+    private final AtomicLong counter = new AtomicLong(1);
+
+    @Override
+    public List<Book> findAll() {
+        return books;
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        return books.stream()
+                .filter(book -> book.getId().equals(id))
+                .findFirst();
+    }
+
+    @Override
+    public Book save(Book book) {
+        if (book.getId() == null) {
+            book.setId(counter.getAndIncrement());
+            books.add(book);
+        } else {
+            findById(book.getId()).ifPresent(existingBook -> {
+                existingBook.setTitle(book.getTitle());
+                existingBook.setAuthor(book.getAuthor());
+            });
+        }
+        return book;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        books.removeIf(book -> book.getId().equals(id));
+    }
+}
+
+
+3. Implement the REST controller
+The BookController handles the HTTP requests for the CRUD endpoints.
+src/main/java/com/example/demo/BookController.java
+
+
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/books")
+public class BookController {
+
+    private final BookService bookService;
+
+    @Autowired
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
+
+    @GetMapping
+    public List<Book> getAllBooks() {
+        return bookService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+        return bookService.findById(id)
+                .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        Book savedBook = bookService.save(book);
+        return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book book) {
+        return bookService.findById(id)
+                .map(existingBook -> {
+                    book.setId(id);
+                    Book updatedBook = bookService.save(book);
+                    return new ResponseEntity<>(updatedBook, HttpStatus.OK);
+                })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        if (bookService.findById(id).isPresent()) {
+            bookService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+}
+
+
+4. Write the @WebMvcTest
+The test class will use @WebMvcTest(BookController.class) to test the controller and @MockBean to provide a mock implementation of BookService.
+src/test/java/com/example/demo/BookControllerTest.java
+
+
+package com.example.demo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(BookController.class)
+class BookControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private BookService bookService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    void testGetAllBooks() throws Exception {
+        // Arrange
+        List<Book> books = Arrays.asList(
+            new Book(1L, "Book 1", "Author 1"),
+            new Book(2L, "Book 2", "Author 2")
+        );
+        when(bookService.findAll()).thenReturn(books);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/books")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].title").value("Book 1"))
+                .andExpect(jsonPath("$[1].id").value(2L));
+
+        verify(bookService, times(1)).findAll();
+    }
+
+    @Test
+    void testGetBookByIdFound() throws Exception {
+        // Arrange
+        Book book = new Book(1L, "Book 1", "Author 1");
+        when(bookService.findById(1L)).thenReturn(Optional.of(book));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/books/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Book 1"));
+
+        verify(bookService, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetBookByIdNotFound() throws Exception {
+        // Arrange
+        when(bookService.findById(anyLong())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        mockMvc.perform(get("/api/books/99")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(bookService, times(1)).findById(99L);
+    }
+
+    @Test
+    void testCreateBook() throws Exception {
+        // Arrange
+        Book newBook = new Book(null, "New Book", "New Author");
+        Book savedBook = new Book(3L, "New Book", "New Author");
+        when(bookService.save(any(Book.class))).thenReturn(savedBook);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newBook)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(3L))
+                .andExpect(jsonPath("$.title").value("New Book"));
+
+        verify(bookService, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    void testUpdateBook() throws Exception {
+        // Arrange
+        Book existingBook = new Book(1L, "Book 1", "Author 1");
+        Book updatedDetails = new Book(1L, "Updated Title", "Updated Author");
+        when(bookService.findById(1L)).thenReturn(Optional.of(existingBook));
+        when(bookService.save(any(Book.class))).thenReturn(updatedDetails);
+
+        // Act & Assert
+        mockMvc.perform(put("/api/books/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedDetails)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.author").value("Updated Author"));
+
+        verify(bookService, times(1)).findById(1L);
+        verify(bookService, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    void testDeleteBook() throws Exception {
+        // Arrange
+        when(bookService.findById(1L)).thenReturn(Optional.of(new Book(1L, "Book 1", "Author 1")));
+        doNothing().when(bookService).deleteById(anyLong());
+
+        // Act & Assert
+        mockMvc.perform(delete("/api/books/1"))
+                .andExpect(status().isNoContent());
+
+        verify(bookService, times(1)).findById(1L);
+        verify(bookService, times(1)).deleteById(1L);
+    }
+}
+
+
+Breakdown of the test file
+@WebMvcTest(BookController.class): This annotation sets up a "slice" of the Spring application context that contains only the BookController and other MVC-related components. It does not load the full context, which makes the test run much faster.
+@MockBean private BookService bookService;: Because @WebMvcTest doesn't load the service layer, we must provide a mock of BookService for the controller to use. We use Mockito to define the behavior of this mock.
+@Autowired private MockMvc mockMvc;: @WebMvcTest auto-configures MockMvc, which allows you to perform mock HTTP requests to the controller's endpoints.
+@Autowired private ObjectMapper objectMapper;: This utility is used to convert Java objects into JSON strings for sending as request bodies.
+when(...).thenReturn(...): Mockito is used to program the mock bookService. For each test, you define what the mocked service should return when a specific method is called.
+mockMvc.perform(...): This simulates an HTTP request, such as a GET, POST, PUT, or DELETE, to a controller endpoint.
+.andExpect(...): These statements assert the expected outcome of the request, such as the HTTP status code (isOk, isCreated, etc.) and the content of the response body (e.g., using jsonPath).
+verify(...): After performing the request, you can verify that the controller correctly interacted with the mocked service by calling the expected methods.
+Testing Web Controllers With Spring Boot @WebMvcTest
+Sep 23, 2023 — To test our Spring MVC controllers, we can use the @WebMvcTest annotation. The annotation scans only beans for @Controller , @ControllerAdvice , and a few other...
+favicon
+Code With Arho
+
+Spring MVC Testing: SpringBootTest vs WebMvcTest
+Oct 21, 2024 — In this example, @WebMvcTest is used to load only the web layer, specifically the UserController , making it well-suited for unit testing controllers in isolati...
+favicon
+Java Code Geeks
+
+Difference between using MockMvc with SpringBootTest and ...
+Oct 5, 2016 — @WebMvcTest is only going to scan the controller you've defined and the MVC infrastructure. That's it. So if your controller has some dependency to other beans ...
+favicon
+Stack Overflow

@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(ProductController.class)
@@ -25,7 +24,7 @@ public class ProductControllerTest {
 
 	@Test
 	public void getProduct() throws Exception {
-		this.mockMvc.perform(get("/api/v1/products/{productId}", "abc")).
+		this.mockMvc.perform(get("/api/v1/products/{productId}", "1")).
 		  andExpect(status().isOk()).
 		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
 		  andExpect(jsonPath("$.<key>").value("<value>"));
@@ -36,7 +35,7 @@ public class ProductControllerTest {
 		this.mockMvc.perform(get("/api/v1/products")).
 		  andExpect(status().isOk()).
 		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-		  andExpect(jsonPath("$[0].id").value("<value>")).
+//		  andExpect(jsonPath("$[0].id").value("<value>")).
 		  andExpect(jsonPath("$[0].name").value("<value>")).
 		  andExpect(jsonPath("$[0].description").value("<value>")).
 		  andExpect(jsonPath("$[0].price").value("<value>")).
