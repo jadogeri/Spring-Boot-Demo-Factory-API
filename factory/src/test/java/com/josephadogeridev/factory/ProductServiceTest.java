@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,11 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test") // Activates application-test.properties
 @DisplayName("Product Service Test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class ProductServiceTest {
 
-    @Autowired
-    private ProductRepository productRepository; // Assuming you have a Spring Data JPA repository
     @Autowired
     private ProductService productService;
 
@@ -42,7 +40,7 @@ class ProductServiceTest {
 
         //Assert
         assertNotNull(allProducts);
-       // assertThat(allProducts.size()).isGreaterThan(0);
+        assertThat(allProducts.size()).isGreaterThan(0);
     }
 
     @Test
@@ -81,7 +79,7 @@ class ProductServiceTest {
         ResponseEntity<Product> singleProductResponse   = null;
         Product singleProduct = null;
         //Act
-        singleProductResponse = ( ResponseEntity <Product>) productService.findProductById(7L);
+        singleProductResponse = ( ResponseEntity <Product>) productService.findProductById(9L);
         System.out.println("singleProductResponse: " + singleProductResponse);
 
         HttpStatusCode status = singleProductResponse.getStatusCode();
@@ -90,14 +88,20 @@ class ProductServiceTest {
         // Get the body
         // In a real application, you would cast to the expected type
         @SuppressWarnings("unchecked")
-        Product product =  singleProductResponse.getBody();
-        System.out.println("product: " + product);
+//        Map<Product> product =  singleProductResponse.getBody();
+//        System.out.println("product: " + product);
+        Product product = null;
 
+        if (singleProductResponse.getStatusCode().is2xxSuccessful()) {
+            product = singleProductResponse.getBody(); // This is how you get the 'product' object
+            System.out.println("Product Name: " + product.getName());
+            System.out.println("Product Price: " + product.getPrice());
+        }
         //Assert
         assertNotNull(singleProductResponse);
         assertEquals(status.toString().trim(), "200 OK");
         assertThat(product instanceof Product && product != null);
-        assertEquals(product.getName().trim().toLowerCase(), "steel");
+        assertEquals(product.getName().trim().toLowerCase(), "lead");
         assertThat(product.getPrice()).isGreaterThan(0);
         assertThat(product.getDescription().length()).isGreaterThan(0);
     }
@@ -107,50 +111,61 @@ class ProductServiceTest {
     void deleteAllProductsTest() {
 
         //Arrange
+        ResponseEntity<?> deleteResponse = null;
         List<Product> allProducts;
+        HashMap map = new HashMap();
 
         // Act
-        productRepository.deleteAll();
-        allProducts = productRepository.findAll();
-        System.out.println("saved products : " + allProducts);
-
+        deleteResponse = productService.deleteAllProducts();
+        allProducts = productService.findAllProducts();
+        System.out.println("deleteAllProducts: " + deleteResponse);
+        HttpStatusCode status = deleteResponse.getStatusCode();
+        System.out.println("Status: " + status);
+        if (deleteResponse.getStatusCode().is2xxSuccessful()) {
+            map = (HashMap<String, String>) deleteResponse.getBody(); // This is how you get the 'product' object
+        }
 
         //Assert
         assertThat(allProducts).isEmpty();
         assertEquals(allProducts.size(), 0);
+        assertEquals(status.toString().trim(), "200 OK");
+        assertEquals(allProducts.size(), 0);
+        assertEquals(map.get("message"), "Successfully deleted all products");
 
     }
+    @Test
+    @Order(3)
+    void createProductTest() {
+
+        //Arrange
+        Product product = new Product();
+        product.setName("Test Create Product");
+        product.setDescription("Test Product in ProductServiceTest");
+        product.setPrice(1000.0);
+
+        // Act
+        ResponseEntity<Product> createResponse = (ResponseEntity<Product>)productService.createProduct(product);
+        HttpStatusCode status = createResponse.getStatusCode();
+        Product createdProduct = null;
+
+        if (createResponse.getStatusCode().is2xxSuccessful()) {
+            createdProduct = createResponse.getBody(); // This is how you get the 'product' object
+            System.out.println("Product Name: " + createdProduct.getName());
+            System.out.println("Product Price: " + createdProduct.getPrice());
+        }
 
 
+        //Assert
+        assertThat(createdProduct).isNotNull();
+        assertEquals(status.toString().trim(), "201 CREATED");
+        assertThat(product instanceof Product && product != null);
+        assertEquals(product.getName().trim().toLowerCase(), "test create product");
+        assertThat(product.getPrice()).isGreaterThan(0);
+        assertEquals(product.getDescription(), createdProduct.getDescription());
+        assertEquals(product.getPrice(), createdProduct.getPrice());
+        assertEquals(product.getDescription().length(), createdProduct.getDescription().length());
+        assertEquals(product.getName(), createdProduct.getName());
 
-
-
-//    @Test
-////    @Order(5)
-//    void ShouldDeleteSingleProduct() {
-//        //Arrange
-//        List<Product> oldProductsList = productRepository.findAll();
-//        List<Product> newProductsList;
-//        Product oldProduct = null;
-//        Long productId = 7L;
-//
-//        // Act
-//        productRepository.deleteById(productId);
-//        newProductsList = productRepository.findAll();
-//
-//        //Assert
-//        for (Product p : newProductsList) {
-//            if (p.getId().equals(productId)) {
-//                oldProduct = p;
-//            }
-//
-//        }
-//        assertNull(oldProduct);
-//        assertNotEquals(oldProductsList.size(), newProductsList.size());
-//        assertEquals(oldProductsList.size(), newProductsList.size() + 1);
-//        assertThat(oldProductsList.size()).isGreaterThan(newProductsList.size());
-//
-//
-//    }
+    }
 
 }

@@ -31,12 +31,6 @@ public class ProductController {
         this.productService = productService;
    }
 
-//    @PostMapping
-//    public ResponseEntity<?> creatProduct(@RequestBody Product product) {
-//        // Logic to save a new user
-//        return productService.createProduct(product);
-//    }
-
     @GetMapping
     public List<Product> getProducts() {
 

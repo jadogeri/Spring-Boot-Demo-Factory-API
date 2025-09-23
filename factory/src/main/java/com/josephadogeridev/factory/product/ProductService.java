@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@SuppressWarnings("unchecked")
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -27,6 +28,7 @@ public class ProductService {
         System.out.println(productRepository.findAll());
         return productRepository.findAll();
     }
+
 
     public ResponseEntity<?> findProductById(Long id) {
 
