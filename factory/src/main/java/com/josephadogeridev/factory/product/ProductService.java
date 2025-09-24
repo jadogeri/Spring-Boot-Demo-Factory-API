@@ -30,19 +30,20 @@ public class ProductService {
     }
 
 
-    public ResponseEntity<?> findProductById(Long id) {
+    public ResponseEntity<Product> findProductById(Long id) {
 
         Product product = productRepository.findById(id).orElse(null);
 
         if (product == null) {
             responseBody = new HashMap<>();
             responseBody.put("message", "No product found with id: " + id);
-            return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+            //return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+            return null;
         }
         return ResponseEntity.ok(product);
     }
 
-    public ResponseEntity<?> deleteProduct(Long id) {
+    public ResponseEntity<Map<String,String>> deleteProduct(Long id) {
          Product product = productRepository.findById(id).orElse(null);
 
         if (product == null) {
@@ -56,7 +57,7 @@ public class ProductService {
         return new ResponseEntity<>(responseBody, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<?> deleteAllProducts() {
+    public ResponseEntity<Map<String, String>> deleteAllProducts() {
         List<Product> products = productRepository.findAll();
         if (products.isEmpty()) {
             responseBody = new HashMap<>();
@@ -70,7 +71,7 @@ public class ProductService {
         return ResponseEntity.ok(responseBody);
     }
 
-    public ResponseEntity<?> createProduct(Product product){
+    public ResponseEntity<Product> createProduct(Product product){
         Optional<Product> productOptional = productRepository.findByProductName(product.getName());
         if (productOptional.isPresent()) {
             throw new IllegalStateException("product name already exists");

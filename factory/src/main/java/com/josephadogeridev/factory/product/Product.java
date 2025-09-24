@@ -29,14 +29,13 @@ public class Product implements ProductInterface {
             sequenceName = "product_sequence",
             allocationSize = 1
     )
-    @GenericGenerator(name = "product_sequence", strategy = "native")
 
     @GeneratedValue(
             strategy = SEQUENCE,
             generator = "product_sequence"
 
     )
-    @Column(name = "id", updatable = false, nullable = false)
+    //@Column(name = "id", updatable = false, nullable = false)
     private Long id;
     @Column(nullable = false, columnDefinition = "TEXT", unique = true)
     @NotBlank(message = "The name is required.")
