@@ -77,3 +77,32 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.message").value("Successfully deleted product with id: 1"));
     }
 }
+
+
+parse using java
+
+
+
+
+
+
+
+
+String response = "<200 OK OK,{message=Successfully deleted product with id: 2},[]>";
+
+// Extract the content inside the angle brackets
+String content = response.substring(1, response.length() - 1);
+
+// Split the content into an array using the comma as a delimiter
+String[] parts = content.split(",", 3);
+
+// Extract individual parts
+String status = parts[0]; // "200 OK OK"
+String messageBody = parts[1]; // "{message=Successfully deleted product with id: 2}"
+String metadata = parts[2]; // "[]"
+
+// Process the message body
+String messageContent = messageBody.substring(1, messageBody.length() - 1);
+String[] keyValue = messageContent.split("=");
+String key = keyValue[0]; // "message"
+String value = keyValue[1]; // "Successfully deleted product with id: 2"

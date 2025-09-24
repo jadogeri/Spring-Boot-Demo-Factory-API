@@ -2,6 +2,7 @@ package com.josephadogeridev.factory.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.josephadogeridev.factory.StringToMapConverter;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -166,6 +167,7 @@ public class ProductControllerTest {
         System.out.println("mock response string" + mockResponseEntity.toString());
 
 
+
         // Act & Assert
         MvcResult mvcResult = mockMvc.perform(delete("/api/v1/products", productId)
                         .accept(MediaType.APPLICATION_JSON))
@@ -174,6 +176,12 @@ public class ProductControllerTest {
         // Get the response content as a String
         String responseData = mvcResult.getResponse().getContentAsString();
 
+        System.out.println("responseData..................... : " + responseData);
+        StringToMapConverter mapconverter = new StringToMapConverter();
+
+        HashMap<String, String> result = mapconverter.convert(responseData);
+
+        System.out.println("result of hashmap : " + result);
 
 //        doNothing().when(productService).deleteProduct(productId);
 //		this.mockMvc.perform(delete("/api/v1/products/{productId}", productId)).
