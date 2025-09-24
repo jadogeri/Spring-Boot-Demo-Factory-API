@@ -4,6 +4,7 @@ package com.josephadogeridev.factory.product;
 
 import com.josephadogeridev.factory.utils.NumberChecker;
 import com.josephadogeridev.factory.exceptions.ErrorResponse;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +34,13 @@ public class ProductController {
 
     }
     @GetMapping(path = "{productId}" )
-    public ResponseEntity<?> getProduct(@PathVariable("productId") String productId    ) {
+    public ResponseEntity<Product> getProduct(@PathVariable("productId") String productId     ) {
         Long id = Long.valueOf(productId);
         return this.productService.findProductById(id);
     }
 
     @PostMapping( consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> addProduct(@RequestBody Product product ) {
         System.out.println("variables in product" + product);
         return this.productService.createProduct(product);
 
@@ -49,9 +50,8 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId) {
         System.out.println("variables in product" + productId);
         if (!NumberChecker.isNumeric(productId)){
-            ErrorResponse response = new ErrorResponse("productId " + productId + "is not valid", HttpStatus.BAD_REQUEST.value());
+            throw new IllegalArgumentException("productId " + productId + "is not valid");
 
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         return this.productService.deleteProduct(Long.valueOf(productId));
 
@@ -63,13 +63,12 @@ public class ProductController {
     }
 
     @PutMapping(path = "{productId}")
-    public  ResponseEntity<?> updateProduct(
+    public  ResponseEntity<Product> updateProduct(
             @PathVariable("productId") String productId,
-            @RequestBody Product product) {
+            @RequestBody Product product) throws Exception {
         if (!NumberChecker.isNumeric(productId)){
-            ErrorResponse response = new ErrorResponse("productId " + productId + "is not valid", HttpStatus.BAD_REQUEST.value());
 
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("productId " + productId + "is not valid" );
         }
         return this.productService.updateProduct(Long.valueOf(productId), product);
 
