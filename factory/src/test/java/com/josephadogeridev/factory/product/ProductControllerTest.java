@@ -1,101 +1,62 @@
 package com.josephadogeridev.factory.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(ProductController.class)
 public class ProductControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @MockitoBean
-    private ProductService productService;
-
-    @Autowired
-    private ProductController productController;
-
-    @MockitoBean
-    private ProductRepository productRepository;
+	@MockBean
+	private ProductService productService;
 
     @Autowired
-    private ObjectMapper objectMapper; // For converting objects to JSON
-    /*
-    *    List<Book> books = Arrays.asList(
-            new Book(1L, "Book 1", "Author 1"),
-            new Book(2L, "Book 2", "Author 2")
-        );
-        when(bookService.findAll()).thenReturn(books);
+    private ObjectMapper objectMapper;
 
-        // Act & Assert
-        mockMvc.perform(get("/api/books")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].title").value("Book 1"))
-                .andExpect(jsonPath("$[1].id").value(2L));
-
-        verify(bookService, times(1)).findAll();
-        *
-        *
-        *
-        *
-        *
-            static Stream<Arguments> providePersonData() {
+    static Stream<Arguments> productIds() {
         return Stream.of(
-            Arguments.of("Alice", 30, true),
-            Arguments.of("Bob", 25, false),
-            Arguments.of("Charlie", 40, true)
+                Arguments.of(1L),
+                Arguments.of(2L),
+                Arguments.of(3L),
+                Arguments.of(4L)
         );
-    }
-
-    @ParameterizedTest
-    @MethodSource("providePersonData")
-    void testPersonDetails(String name, int age, boolean isActive) {
-        assertTrue(age > 0);
-        // Further assertions based on name and isActive
-    }
-
-        */
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
-        //MockitoAnnotations.openMocks(this); // Initialize mocks
     }
 
     static Stream<Arguments> productData() {
         return Stream.of(
-                Arguments.of("lead","lead description", 100.0),
-                Arguments.of("steel","steel description", 200.0),
-                Arguments.of("copper","copper description", 50.0)
+                Arguments.of(1L,"lead","lead description", 100.0),
+                Arguments.of(2L,"steel","steel description", 200.0),
+                Arguments.of(3L,"copper","copper description", 50.0)
         );
     }
+
 
     @Test
     //@MethodSource("productList")
@@ -107,10 +68,10 @@ public class ProductControllerTest {
                 new Product("copper","copper description",50.0, LocalDateTime.now(), LocalDateTime.now()));
 
         when(productService.findAllProducts()).thenReturn(productList);
-        this.mockMvc.perform(get("/api/v1/products")).
+		this.mockMvc.perform(get("/api/v1/products")).
                 andExpect(status().isOk()).
                 andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-	            andExpect(jsonPath("$[0].name").value("lead")).
+                andExpect(jsonPath("$[0].name").value("lead")).
                 andExpect(jsonPath("$[0].description").value("lead description")).
                 andExpect(jsonPath("$[0].price").value(100.0)).
                 andExpect(jsonPath("$[1].name").value("steel")).
@@ -123,55 +84,102 @@ public class ProductControllerTest {
         verify(productService, times(1)).findAllProducts();
     }
 
+
 	@ParameterizedTest
     @MethodSource("productData")
-	public void getProduct(String name, String description, double price) throws Exception {
-        long id = 1L;
-        String stringID = Long.toString(id);
-        Product product = new Product(id, name,description,price);
-
-
-
-        //ResponseEntity<?> mockResponse = ResponseEntity.ok().body(product);
+    public void getProduct(long productId, String name, String description, double price) throws Exception {
+        Product product = new Product(productId, name, description, price);
         ResponseEntity<Product> mockResponse = new ResponseEntity<>(product, HttpStatus.OK);
 
-        // 3. Define the behavior of the mock object.
-                // `when()` specifies the method call to intercept.
-                // `thenReturn()` specifies the value to return when the intercepted method is called.
-                // `anyLong()` is a Mockito argument matcher used to match any `long` value.
-//                when(productController.getProduct(stringID)).thenReturn(mockResponse);
-
-        //ResponseEntity<?> mockResponse = ResponseEntity.ok().body(product);
-//
-// Pass the correct argument type (long) to the method call
-        when(productService.findProductById(id)).thenReturn(mockResponse);
-
-        // 4. Call the method being tested (the `productController` method that uses `productService`).
-                //ResponseEntity<?> response = productController.getProduct(stringID);
-
-                // 5. Verify the results.
-//                assertEquals(HttpStatus.OK, response.getStatusCode());
-//                assertEquals(mockResponse, response.getBody());
+        when(productService.findProductById(productId)).thenReturn((mockResponse));
 
 
-
-        this.mockMvc.perform(get("/api/v1/products/{productId}", stringID)).andExpect(status().isOk()) // Assert HTTP status code is 200 OK
-               // .andExpect(content().contentType(MediaType.APPLICATION_JSON)). //
-                .andExpect(status().isOk()).
-        //        andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-//                andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-                andExpect(jsonPath("$.name").value(name))
-        .andExpect(jsonPath("$.description").value(description))
-                .andExpect(jsonPath("$.price").value(price));
-	}
-
-	@Test
-	public void deleteProduct() throws Exception {
-		this.mockMvc.perform(delete("/api/v1/products/{productId}", "abc")).
+        this.mockMvc.perform(get("/api/v1/products/{productId}", productId)).
 		  andExpect(status().isOk()).
 		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-		  andExpect(jsonPath("$.name").value("<value>")
-          );
+		  andExpect(jsonPath("$.id").value(productId)).
+		  andExpect(jsonPath("$.name").value(product.getName())).
+		  andExpect(jsonPath("$.description").value(product.getDescription())).
+		  andExpect(jsonPath("$.price").value(product.getPrice()));
+	}
+
+    @ParameterizedTest
+    @MethodSource("productData")
+	public void addProduct(long productId, String name, String description, double price) throws Exception {
+        LocalDateTime createdDate = LocalDateTime.now();
+        LocalDateTime lastModifiedDate = LocalDateTime.now();
+          Product savedProduct = new Product(name,description,price, createdDate,lastModifiedDate);
+        savedProduct.setId(productId);
+
+        System.out.println("product instance" + savedProduct);
+
+        ResponseEntity<Product> mockResponse = new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+
+        when(productService.createProduct(any(Product.class))).thenReturn(mockResponse);
+
+        this.mockMvc.perform(post("/api/v1/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(savedProduct))).
+		  andExpect(status().isCreated()).
+		  andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+          andExpect(jsonPath("$.id").value(productId)).
+          andExpect(jsonPath("$.name").value(savedProduct.getName())).
+          andExpect(jsonPath("$.description").value(savedProduct.getDescription())).
+          andExpect(jsonPath("$.price").value(savedProduct.getPrice()));
+
+        verify(productService, times(1)).createProduct(any(Product.class));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("productIds")
+	public void deleteProduct(long productId) throws Exception {
+
+        // Arrange
+        Product product =  new Product("lead","lead description",100.0, LocalDateTime.now(),LocalDateTime.now());
+        product.setId(productId);
+        ResponseEntity<Product> mockResponse = new ResponseEntity<>(product, HttpStatus.OK);
+
+        when(productService.findProductById(productId)).thenReturn((mockResponse));
+
+//        HashMap<String, String > responseBody = new HashMap<String, String>();
+//        responseBody.put("message", "Successfully deleted product with id: " + productId);
+//        ResponseEntity<HashMap<String, String>> mockResponse = new ResponseEntity<HashMap<String, String>>(responseBody, HttpStatus.OK);
+//
+//        when(productService.findProductById(Long.parseLong(productId))).thenReturn(product);
+
+        //when(productService.deleteProduct(Long.parseLong(productId)).thenReturn(responseBody));
+        HashMap<String, String > responseBody = new HashMap<String, String>();
+        responseBody.put("message", "Successfully deleted product with id: " + productId);
+
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(responseBody);
+
+        System.out.println(jsonString);
+
+
+        ResponseEntity<HashMap<String, String>> mockResponseEntity = ResponseEntity.ok(responseBody);
+
+        when(productService.deleteProduct(productId)).thenReturn(mockResponseEntity);
+
+        System.out.println("mock response" + mockResponseEntity);
+        System.out.println("mock response string" + mockResponseEntity.toString());
+
+
+        // Act & Assert
+        MvcResult mvcResult = mockMvc.perform(delete("/api/v1/products", productId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+
+        // Get the response content as a String
+        String responseData = mvcResult.getResponse().getContentAsString();
+
+
+//        doNothing().when(productService).deleteProduct(productId);
+//		this.mockMvc.perform(delete("/api/v1/products/{productId}", productId)).
+//		  andExpect(status().isOk()).
+//		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
+//		  andExpect(jsonPath("$.<key>").value("<value>"));
 	}
 
 	@Test
@@ -179,90 +187,19 @@ public class ProductControllerTest {
 		this.mockMvc.perform(delete("/api/v1/products")).
 		  andExpect(status().isOk()).
 		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-		  andExpect(jsonPath("$.name").value("<value>"));
+		  andExpect(jsonPath("$.<key>").value("<value>"));
 	}
 
 	@Test
 	public void updateProduct() throws Exception {
-		this.mockMvc.perform(put("/api/v1/products/{productId}", "abc").content("abc").contentType(MediaType.APPLICATION_JSON_VALUE)).
-		  andExpect(status().isOk()).
-		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-		  andExpect(jsonPath("$.name").value(""));
+		this.mockMvc.perform(put("/api/v1/products/{productId}", "abc").content("abc").contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(jsonPath("$.id").value("<value>"))
+			.andExpect(jsonPath("$.name").value("<value>"))
+			.andExpect(jsonPath("$.description").value("<value>"))
+			.andExpect(jsonPath("$.price").value("<value>"))
+			.andExpect(jsonPath("$.createdDate").value("<value>"))
+			.andExpect(jsonPath("$.lastModifiedDate").value("<value>"));
 	}
-
-    @ParameterizedTest
-    @MethodSource("productData")
-	public void addProducts(String name, String description, double price) throws Exception {
-
-        Product product = new Product(name,description,price, LocalDateTime.now(),LocalDateTime.now());
-        ResponseEntity<Product> responseEntity = new ResponseEntity<>(product, HttpStatus.CREATED);
-
-        when(productService.createProduct(product)).thenReturn(responseEntity);
-
-        ResponseEntity<Product> response = (ResponseEntity<Product>)productController.addProduct(product);
-
-        // Call the controller method
-        //String result = productC("someId");
-//        ResponseEntity<Product> responseEntity = new ResponseEntity<>(product, HttpStatus.CREATED);
-
-
-//        Mockito.when(productService.createProduct(product)).thenReturn(responseEntity);
-
-//        ResponseEntity<Product> actualResponseEntity = (ResponseEntity<Product>) productController.addProduct(product);
-
-
-        this.mockMvc.perform(post("/api/v1/products")
-        .content(objectMapper.writeValueAsString(product))
-//                        .contentType(MediaType.APPLICATION_JSON))
-
-                      .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-               // .andDo(print())
-			.andExpect(jsonPath("$.name").value(product.getName()))
-            .andExpect(jsonPath("$.description").value(product.getDescription()))
-            .andExpect(jsonPath("$.price").value(product.getPrice()))
-            .andExpect(jsonPath("$.createdDate").value(product.getCreatedDate()))
-            .andExpect(jsonPath("$.lastModifiedDate").value(product.getLastModifiedDate()));
-
-
-
-
-
-
-
-    }
 }
-
-/*
-*
-*         ResponseEntity<Product> responseEntityWithNullBody = new ResponseEntity<>(HttpStatus.OK);
-
-        // Mock the service method to return this ResponseEntity
-        when(productService.getProductById(anyLong())).thenReturn(responseEntityWithNullBody);
-
-        // Call the method being tested, which in turn calls the mocked service
-        // Assuming your controller or another component calls productService.getProductById()
-        ResponseEntity<Product> actualResponseEntity = someController.getProduct(1L);
-
-        // Assert that the body of the returned ResponseEntity is null
-        assertNull(actualResponseEntity.getBody());
-        assertEquals(HttpStatus.OK, actualResponseEntity.getStatusCode());*/
-
-/*
-* /*
-*         Product product = new Product(1L, "Test Product");
-        ResponseEntity<Product> responseEntity = new ResponseEntity<>(product, HttpStatus.OK);
-
-        when(productService.getProduct(1L)).thenReturn(responseEntity); // Assuming productService returns ResponseEntity
-
-        mockMvc.perform(get("/products/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(product)));
-    }*/
-
-/*
-*                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newProduct)))
-                .andExpect(status().isCreated()) // Verify HTTP status 201 Created
-                .andExpect(content().json(objectMapper.writeValueAsString(expectedProduct))); // Verify response body*/

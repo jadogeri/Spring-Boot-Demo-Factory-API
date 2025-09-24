@@ -7,9 +7,13 @@ import com.josephadogeridev.factory.exceptions.ErrorResponse;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -39,7 +43,7 @@ public class ProductController {
         return this.productService.findProductById(id);
     }
 
-    @PostMapping( consumes = "application/json", produces = "application/json")
+    @PostMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<Product> addProduct(@RequestBody Product product ) {
         System.out.println("variables in product" + product);
         return this.productService.createProduct(product);
@@ -47,7 +51,7 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId) {
+    public ResponseEntity<HashMap<String, String>> deleteProduct(@PathVariable("productId") String productId) {
         System.out.println("variables in product" + productId);
         if (!NumberChecker.isNumeric(productId)){
             throw new IllegalArgumentException("productId " + productId + "is not valid");

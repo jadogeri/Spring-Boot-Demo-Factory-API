@@ -27,6 +27,7 @@ public class GlobalExceptionHandler {
         errorDetails.put("url", request.getRequestURI());
         errorDetails.put("method", request.getMethod());
         errorDetails.put("timestamp", LocalDateTime.now().toString());
+
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 

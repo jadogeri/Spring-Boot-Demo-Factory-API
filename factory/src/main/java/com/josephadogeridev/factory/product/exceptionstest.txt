@@ -1,0 +1,79 @@
+
+An unparsable JSON string in a Spring Boot test involving ResponseEntity<HashMap> typically occurs when you are trying to use a JSON assertion on a non-string object. This most often happens with @WebMvcTest and MockMvc when you don't correctly deserialize the response or when the controller directly returns a ResponseEntity and the framework's JSON conversion is bypassed.
+The solution is to perform one of two actions: explicitly deserialize the response content into a HashMap or a custom POJO, or properly configure MockMvc to handle the JSON conversion for you.
+Solution 1: Explicitly parse the response with ObjectMapper
+Use Jackson's ObjectMapper to convert the raw JSON string from the MockMvc result into a HashMap, which you can then assert against. This is a reliable method that gives you full control.
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import java.util.HashMap;
+import java.util.Map;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@WebMvcTest(ProductController.class)
+class ProductControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void shouldReturnSuccessMessageOnDeletion() throws Exception {
+        // Create an ObjectMapper for manual deserialization
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        MvcResult mvcResult = mockMvc.perform(delete("/products/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Get the response content as a String
+        String responseBody = mvcResult.getResponse().getContentAsString();
+
+        // Deserialize the JSON string into a HashMap
+        Map<String, String> responseMap = objectMapper.readValue(responseBody, HashMap.class);
+
+        // Assert the content of the HashMap
+        assertEquals("Successfully deleted product with id: 1", responseMap.get("message"));
+    }
+}
+
+// Example Controller for context
+// @RestController
+// class ProductController {
+//     @DeleteMapping("/products/{id}")
+//     public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
+//         Map<String, String> response = new HashMap<>();
+//         response.put("message", "Successfully deleted product with id: " + id);
+//         return ResponseEntity.ok(response);
+//     }
+// }
+
+Solution 2: Perform direct JSON assertions
+If you want to avoid manual deserialization, you can use MockMvc's built-in JSON path matchers (jsonPath). This allows you to perform assertions directly on the JSON response.
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(ProductController.class)
+class ProductControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void shouldReturnSuccessMessageOnDeletion() throws Exception {
+        mockMvc.perform(delete("/products/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Successfully deleted product with id: 1"));
+    }
+}

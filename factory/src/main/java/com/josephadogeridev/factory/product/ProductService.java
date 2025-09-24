@@ -3,7 +3,9 @@ package com.josephadogeridev.factory.product;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.josephadogeridev.factory.exceptions.ResourceConflictException;
 import com.josephadogeridev.factory.exceptions.ResourceNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +21,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    Map<String, String> responseBody ;
+    HashMap<String, String> responseBody ;
 
 
     public ProductService(ProductRepository productRepository) {
@@ -46,18 +48,18 @@ public class ProductService {
         return ResponseEntity.ok(product);
     }
 
-    public ResponseEntity<Map<String,String>> deleteProduct(Long id) {
+    public ResponseEntity<HashMap<String,String>> deleteProduct(Long id) {
          Product product = productRepository.findById(id).orElse(null);
 
         if (product == null) {
             responseBody = new HashMap<>();
             responseBody.put("message", "No product with id: " + id);
-            return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+            throw new NotFoundException("No product found with id: " + id);
         }
         productRepository.deleteById(id);
         responseBody = new HashMap<>();
         responseBody.put("message", "Successfully deleted product with id: " + id);
-        return new ResponseEntity<>(responseBody, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
     public ResponseEntity<Map<String, String>> deleteAllProducts() {
@@ -82,8 +84,11 @@ public class ProductService {
         product.setCreatedDate(LocalDateTime.now());
         product.setLastModifiedDate(LocalDateTime.now());
         productRepository.save(product);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+        //return new ResponseEntity<>(product, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     public ResponseEntity<Product> updateProduct(Long productId, Product product) {

@@ -94,8 +94,8 @@ public class Product implements ProductInterface {
     public LocalDateTime getLastModifiedDate() { return lastModifiedDate;}
     public void setLastModifiedDate(LocalDateTime lastModifiedDate) { this.lastModifiedDate = lastModifiedDate; }
 
-    @Override
-    public String toString() {
+    //@Override
+    public String toJSonString() {
 
         JsonObject productJson = Json.createObjectBuilder()
                 .add("name", this.name)
