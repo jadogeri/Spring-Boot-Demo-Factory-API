@@ -1,0 +1,3 @@
+DELETE FROM PUBLIC.PRODUCT;
+
+commit;

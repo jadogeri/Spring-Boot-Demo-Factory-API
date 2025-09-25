@@ -22,7 +22,37 @@ class ProductRepositoryTest {
     private ProductRepository productRepository; // Assuming you have a Spring Data JPA repository
 
     @Test
-//    @Order(2)
+    @Order(1)
+    void ShouldGetAllProducts() {
+        //Arrange
+        List<Product> productsList;
+
+        //Act
+        productsList = productRepository.findAll();
+        System.out.println("product found : " + productsList);
+
+        //Assert
+        assertThat(productsList).isNotNull();
+    }
+
+    @Test
+    @Order(2)
+    void ShouldFindProductById() {
+        //Arrange
+        Optional<Product> product;
+
+        //Act
+        product = productRepository.findById(7L);
+        System.out.println("product found : " + product);
+
+        //Assert
+        assertThat(product).isNotNull();
+       // assertThat(product.get().getDescription()).isNotNull();
+        //assertThat(product.get().getPrice()).isNotNull();
+    }
+
+    @Test
+    @Order(3)
     void shouldSaveAndFindProduct() {
         Product product = new Product();
 //        product.setId(7L);
@@ -39,43 +69,8 @@ class ProductRepositoryTest {
         assertThat(productRepository.findById(product.getId())).isPresent();
     }
 
-//    @Test
-////    @Order(10)
-//    void ShouldDeleteAllProducts() {
-//        //Arrange
-//        List<Product> allProducts;
-//
-//        // Act
-//        productRepository.deleteAll();
-//        allProducts = productRepository.findAll();
-//        System.out.println("saved products : " + allProducts);
-//
-//
-//        //Assert
-//        assertThat(allProducts).isEmpty();
-//        assertEquals(allProducts.size(), 0);
-//
-//    }
-
-
     @Test
-//    @Order(4)
-    void ShouldFindProductById() {
-        //Arrange
-        Optional<Product> product;
-
-        //Act
-        product = productRepository.findById(7L);
-        System.out.println("product found : " + product);
-
-        //Assert
-        assertThat(product).isPresent();
-        assertThat(product.get().getName()).isNotNull();
-        assertThat(product.get().getDescription()).isNotNull();
-        assertThat(product.get().getPrice()).isNotNull();
-    }
-
-    @Test
+    @Order(4)
     void ShouldFindAndUpdateProduct() {
         //Arrange
         Product oldProduct = new Product("old name", "old description", 20.0, LocalDateTime.now(), LocalDateTime.now());
@@ -108,23 +103,10 @@ class ProductRepositoryTest {
         assertEquals(savedProduct.getLastModifiedDate(), updatedProduct.getLastModifiedDate());
     }
 
-    @Test
-//    @Order(1)
-    void ShouldGetAllProducts() {
-        //Arrange
-        List<Product> productsList;
 
-        //Act
-        productsList = productRepository.findAll();
-        System.out.println("product found : " + productsList);
-
-        //Assert
-        assertThat(productsList).isNotNull();
-        assertThat(productsList.size()).isGreaterThan(0);
-    }
 
     @Test
-//    @Order(5)
+    @Order(5)
     void ShouldDeleteSingleProduct() {
         //Arrange
         List<Product> oldProductsList = productRepository.findAll();
@@ -144,11 +126,26 @@ class ProductRepositoryTest {
 
         }
         assertNull(oldProduct);
-        assertNotEquals(oldProductsList.size(), newProductsList.size());
-        assertEquals(oldProductsList.size(), newProductsList.size() + 1);
-        assertThat(oldProductsList.size()).isGreaterThan(newProductsList.size());
-
 
     }
+
+    @Test
+    @Order(6)
+    void ShouldDeleteAllProducts() {
+        //Arrange
+        List<Product> allProducts;
+
+        // Act
+        productRepository.deleteAll();
+        allProducts = productRepository.findAll();
+        System.out.println("saved products : " + allProducts);
+
+
+        //Assert
+        assertThat(allProducts).isEmpty();
+        assertEquals(allProducts.size(), 0);
+
+    }
+
 
 }

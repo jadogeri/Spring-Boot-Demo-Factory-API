@@ -17,15 +17,15 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
         HttpServletRequest request = RequestContextUtil.getCurrentHttpRequest();
 
         Map<String, String> errorDetails = new HashMap<>();
 
         errorDetails.put("message", "Resource not found: " + ex.getMessage());
         errorDetails.put("code", "RESOURCE_NOT_FOUND");
-        errorDetails.put("url", request.getRequestURI());
-        errorDetails.put("method", request.getMethod());
+        errorDetails.put("url", request != null ? request.getRequestURI() : "" );
+        errorDetails.put("method", request != null ? request.getMethod() : "");
         errorDetails.put("timestamp", LocalDateTime.now().toString());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
@@ -43,8 +43,8 @@ public class GlobalExceptionHandler {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", ex.getMessage());
         errorDetails.put("code", "NOT_FOUND");
-        errorDetails.put("url", request.getRequestURI());
-        errorDetails.put("method", request.getMethod());
+        errorDetails.put("url", request != null ? request.getRequestURI() : "" );
+        errorDetails.put("method", request != null ? request.getMethod() : "");
         errorDetails.put("timestamp", LocalDateTime.now().toString());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
@@ -57,8 +57,8 @@ public class GlobalExceptionHandler {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", ex.getMessage());
         errorDetails.put("code", "CONFLICT");
-        errorDetails.put("url", request.getRequestURI());
-        errorDetails.put("method", request.getMethod());
+        errorDetails.put("url", request != null ? request.getRequestURI() : "" );
+        errorDetails.put("method", request != null ? request.getMethod() : "");
         errorDetails.put("timestamp", LocalDateTime.now().toString());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
@@ -71,8 +71,8 @@ public class GlobalExceptionHandler {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", ex.getMessage());
         errorDetails.put("code", "BAD_REQUEST");
-        errorDetails.put("url", request.getRequestURI());
-        errorDetails.put("method", request.getMethod());
+        errorDetails.put("url", request != null ? request.getRequestURI() : "" );
+        errorDetails.put("method", request != null ? request.getMethod() : "");
         errorDetails.put("timestamp", LocalDateTime.now().toString());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
@@ -85,8 +85,8 @@ public class GlobalExceptionHandler {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("message", "An unexpected error occurred.");
         errorDetails.put("code", "INTERNAL_SERVER_ERROR");
-        errorDetails.put("url", request.getRequestURI());
-        errorDetails.put("method", request.getMethod());
+        errorDetails.put("url", request != null ? request.getRequestURI() : "" );
+        errorDetails.put("method", request != null ? request.getMethod() : "");
         errorDetails.put("timestamp", LocalDateTime.now().toString());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);

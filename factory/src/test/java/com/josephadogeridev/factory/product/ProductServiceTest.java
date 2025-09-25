@@ -6,6 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test") // Activates application-test.properties
 @DisplayName("Product Service Test")
+@Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductServiceTest {
 
@@ -25,6 +29,7 @@ class ProductServiceTest {
 
     @Test
     @Order(1)
+    @Sql("/import.sql")
     void findAllProductsTest() {
         //Arrange
         List<Product> allProducts = null;
@@ -38,7 +43,8 @@ class ProductServiceTest {
     }
 
     @Test
-    @Order(2)
+    @Order(6)
+    @Sql("/import.sql")
     void deleteSingleProductTest() {
         //Arrange
         ResponseEntity<?> deletedProductResponse   = null;
@@ -68,6 +74,7 @@ class ProductServiceTest {
 
     @Test
     @Order(2)
+    @Sql("/import.sql")
     void findSingleProductTest() {
         //Arrange
         ResponseEntity<Product> singleProductResponse   = null;
@@ -101,7 +108,9 @@ class ProductServiceTest {
     }
 
     @Test
-    @Order(3)
+    @Order(10)
+    @Sql("/import.sql")
+
     void deleteAllProductsTest() {
 
         //Arrange
