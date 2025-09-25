@@ -27,6 +27,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        cache-dependency-path: './factory/pom.xml' # Adjust path as needed
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
