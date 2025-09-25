@@ -1,5 +1,11 @@
 package com.josephadogeridev.factory.product;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 public interface ProductInterface {
     
     String getName();

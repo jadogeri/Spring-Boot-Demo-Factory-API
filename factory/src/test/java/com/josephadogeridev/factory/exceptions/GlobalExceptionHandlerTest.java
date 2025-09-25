@@ -1,10 +1,13 @@
 package com.josephadogeridev.factory.exceptions;
 
-import java.util.HashMap;
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import java.util.Map;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.github.dockerjava.api.exception.NotFoundException;

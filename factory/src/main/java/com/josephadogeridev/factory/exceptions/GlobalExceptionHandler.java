@@ -1,7 +1,11 @@
 package com.josephadogeridev.factory.exceptions;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
 import com.github.dockerjava.api.exception.BadRequestException;
-import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.josephadogeridev.factory.utils.RequestContextUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,11 @@
 package com.josephadogeridev.factory.product;
+
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.josephadogeridev.factory.utils.JSONStringParser;
 import org.junit.jupiter.api.*;
@@ -13,11 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
-
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -60,7 +65,6 @@ public class ProductControllerTest {
 
 
     @Test
-    //@MethodSource("productList")
     public void getProducts() throws Exception {
 
         List<Product> productList = Arrays.asList(

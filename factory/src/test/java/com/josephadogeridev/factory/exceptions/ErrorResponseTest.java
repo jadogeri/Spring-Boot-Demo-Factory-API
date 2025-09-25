@@ -1,5 +1,11 @@
 package com.josephadogeridev.factory.exceptions;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +34,6 @@ public class ErrorResponseTest {
 		long expected = 0L;
 		long actual = e.getTimestamp();
         assertTrue(expected < actual);
-
 
 	}
 }

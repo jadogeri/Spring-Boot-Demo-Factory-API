@@ -1,5 +1,11 @@
 package com.josephadogeridev.factory.product;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,14 +58,10 @@ class ProductServiceTest {
         //Act
         deletedProductResponse = productService.deleteProduct(8L);
         System.out.println("product found : " + deletedProductResponse);
-        // Get the status code
-        @SuppressWarnings("unchecked")
+
         HttpStatusCode status = deletedProductResponse.getStatusCode();
         System.out.println("Status: " + status); // Output: Status: 202 ACCEPTED
 
-        // Get the body
-        // In a real application, you would cast to the expected type
-        @SuppressWarnings("unchecked")
         Map<String, String> body = (Map<String, String>) deletedProductResponse.getBody();
         String message = null;
         if (body != null) {
@@ -86,11 +88,6 @@ class ProductServiceTest {
         HttpStatusCode status = singleProductResponse.getStatusCode();
         System.out.println("Status: " + status);
 
-        // Get the body
-        // In a real application, you would cast to the expected type
-        @SuppressWarnings("unchecked")
-//        Map<Product> product =  singleProductResponse.getBody();
-//        System.out.println("product: " + product);
         Product product = null;
 
         if (singleProductResponse.getStatusCode().is2xxSuccessful()) {

@@ -1,24 +1,22 @@
 package com.josephadogeridev.factory.product;
 
-
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
 
 import com.josephadogeridev.factory.utils.NumberChecker;
-import com.josephadogeridev.factory.exceptions.ErrorResponse;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/products")
-//@XmlRootElement(name = "employee")
-
 public class ProductController {
 
     private final ProductService productService;
@@ -75,6 +73,5 @@ public class ProductController {
             throw new BadRequestException("productId " + productId + "is not valid" );
         }
         return this.productService.updateProduct(Long.valueOf(productId), product);
-
     }
 }

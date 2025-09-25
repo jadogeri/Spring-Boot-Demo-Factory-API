@@ -1,5 +1,11 @@
 package com.josephadogeridev.factory.product;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.josephadogeridev.factory.exceptions.ResourceConflictException;
 import com.josephadogeridev.factory.exceptions.ResourceNotFoundException;
@@ -8,12 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,7 +24,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     HashMap<String, String> responseBody ;
-
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -33,14 +35,12 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-
     public ResponseEntity<Product> findProductById(Long id) {
 
         Product product = productRepository.findById(id).orElse(null);
 
         if (product == null) {
             responseBody = new HashMap<>();
-
             throw new NotFoundException("No product found with id: " + id);
 
         }
@@ -83,7 +83,6 @@ public class ProductService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        //return new ResponseEntity<>(product, headers, HttpStatus.CREATED);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
@@ -118,14 +117,11 @@ public class ProductService {
         }
         if(product.getDescription() != null ) {
 
-
             oldProduct.setDescription(product.getDescription());
 
         }
         oldProduct.setId(productId);
         oldProduct.setLastModifiedDate(LocalDateTime.now());
-        System.out.println("product to modify with new fields: " + oldProduct.toString());
-
         Product modifiedProduct = productRepository.save(oldProduct);
 
         return ResponseEntity.accepted().body(modifiedProduct);

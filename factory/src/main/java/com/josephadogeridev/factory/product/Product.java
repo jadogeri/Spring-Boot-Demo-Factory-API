@@ -1,13 +1,14 @@
 package com.josephadogeridev.factory.product;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import static jakarta.persistence.GenerationType.SEQUENCE;
-
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -35,7 +36,6 @@ public class Product implements ProductInterface {
             generator = "product_sequence"
 
     )
-    //@Column(name = "id", updatable = false, nullable = false)
     private Long id;
     @Column(nullable = false, columnDefinition = "TEXT", unique = true)
     @NotBlank(message = "The name is required.")
@@ -105,20 +105,9 @@ public class Product implements ProductInterface {
                 .add("lastModifiedDate", String.valueOf(this.getLastModifiedDate()))
                 .build();
 
-//        // Build a Gson instance with pretty printing enabled
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//
-//
-//        // Convert the JsonObject to a pretty-printed JSON string
-//        String prettyJson = gson.toJson(productJson);
-//
-//        // Print the pretty-printed JSON
         System.out.println(productJson.toString());
-//
-//        System.out.println(prettyJson);
 
         return productJson.toString();
-
 
     }
 }

@@ -1,17 +1,20 @@
 package com.josephadogeridev.factory.product;
 
+/**
+ * @author Joseph Adogeri
+ * @since 25-SEP-2025
+ * @version 1.0.0
+ */
+
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ActiveProfiles("test") // Activates application-test.properties
 @DisplayName("Product Repository Integration Test : " + "😱")
@@ -47,8 +50,7 @@ class ProductRepositoryTest {
 
         //Assert
         assertThat(product).isNotNull();
-       // assertThat(product.get().getDescription()).isNotNull();
-        //assertThat(product.get().getPrice()).isNotNull();
+
     }
 
     @Test
