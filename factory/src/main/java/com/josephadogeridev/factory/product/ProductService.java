@@ -53,7 +53,6 @@ public class ProductService {
 
         if (product == null) {
             responseBody = new HashMap<>();
-            responseBody.put("message", "No product with id: " + id);
             throw new NotFoundException("No product found with id: " + id);
         }
         productRepository.deleteById(id);
@@ -62,18 +61,16 @@ public class ProductService {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    public ResponseEntity<Map<String, String>> deleteAllProducts() {
+    public ResponseEntity<HashMap<String,String>> deleteAllProducts() {
         List<Product> products = productRepository.findAll();
         if (products.isEmpty()) {
             responseBody = new HashMap<>();
-            responseBody.put("message", "No products found");
-            return ResponseEntity.ok(responseBody);
+            throw new ResourceNotFoundException("No products found");
         }
-
         productRepository.deleteAll(products);
         responseBody = new HashMap<>();
         responseBody.put("message", "Successfully deleted all products");
-        return ResponseEntity.ok(responseBody);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
     public ResponseEntity<Product> createProduct(Product product){
@@ -132,7 +129,7 @@ public class ProductService {
 
         Product modifiedProduct = productRepository.save(oldProduct);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(modifiedProduct);
+        return ResponseEntity.accepted().body(modifiedProduct);
 
     }
 }

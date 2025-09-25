@@ -1,15 +1,12 @@
 package com.josephadogeridev.factory.product;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.josephadogeridev.factory.StringToMapConverter;
+import com.josephadogeridev.factory.utils.JSONStringParser;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +32,11 @@ public class ProductControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@MockitoBean
 	private ProductService productService;
+
+    @MockitoBean
+    private ProductRepository productRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -139,75 +139,98 @@ public class ProductControllerTest {
         // Arrange
         Product product =  new Product("lead","lead description",100.0, LocalDateTime.now(),LocalDateTime.now());
         product.setId(productId);
-        ResponseEntity<Product> mockResponse = new ResponseEntity<>(product, HttpStatus.OK);
 
-        when(productService.findProductById(productId)).thenReturn((mockResponse));
-
-//        HashMap<String, String > responseBody = new HashMap<String, String>();
-//        responseBody.put("message", "Successfully deleted product with id: " + productId);
-//        ResponseEntity<HashMap<String, String>> mockResponse = new ResponseEntity<HashMap<String, String>>(responseBody, HttpStatus.OK);
-//
-//        when(productService.findProductById(Long.parseLong(productId))).thenReturn(product);
-
-        //when(productService.deleteProduct(Long.parseLong(productId)).thenReturn(responseBody));
-        HashMap<String, String > responseBody = new HashMap<String, String>();
+        HashMap<String, String > responseBody = new HashMap<>();
         responseBody.put("message", "Successfully deleted product with id: " + productId);
-
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(responseBody);
-
-        System.out.println(jsonString);
-
 
         ResponseEntity<HashMap<String, String>> mockResponseEntity = ResponseEntity.ok(responseBody);
 
         when(productService.deleteProduct(productId)).thenReturn(mockResponseEntity);
 
-        System.out.println("mock response" + mockResponseEntity);
-        System.out.println("mock response string" + mockResponseEntity.toString());
-
-
-
         // Act & Assert
-        MvcResult mvcResult = mockMvc.perform(delete("/api/v1/products", productId)
+        MvcResult mvcResult = mockMvc.perform(delete("/api/v1/products/{productId}", productId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
 
         // Get the response content as a String
         String responseData = mvcResult.getResponse().getContentAsString();
 
-        System.out.println("responseData..................... : " + responseData);
-        StringToMapConverter mapconverter = new StringToMapConverter();
+        JSONStringParser jsonStringParser = new JSONStringParser();
+        jsonStringParser.extract(responseData);
 
-        HashMap<String, String> result = mapconverter.convert(responseData);
+        String key = jsonStringParser.getKey();
+        String value = jsonStringParser.getValue();
 
-        System.out.println("result of hashmap : " + result);
+        Assertions.assertTrue(responseBody.containsKey(key));
+        Assertions.assertTrue(responseBody.containsValue(value));
+        Assertions.assertEquals(responseBody.get(key), value);
 
-//        doNothing().when(productService).deleteProduct(productId);
-//		this.mockMvc.perform(delete("/api/v1/products/{productId}", productId)).
-//		  andExpect(status().isOk()).
-//		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-//		  andExpect(jsonPath("$.<key>").value("<value>"));
-	}
+        verify(productService, times(1)).deleteProduct(productId);
+
+
+    }
 
 	@Test
 	public void deleteProducts() throws Exception {
-		this.mockMvc.perform(delete("/api/v1/products")).
+        List<Product> productList = Arrays.asList(
+                new Product("lead","lead description",100.0, LocalDateTime.now(),LocalDateTime.now()),
+                new Product("steel","steel description",150.0, LocalDateTime.now(),LocalDateTime.now()),
+                new Product("copper","copper description",50.0, LocalDateTime.now(), LocalDateTime.now()));
+
+        productRepository.saveAll(productList);
+
+        HashMap<String, String > responseBody = new HashMap<>();
+        responseBody.put("message", "Successfully deleted all products");
+
+        ResponseEntity<HashMap<String, String>> mockResponseEntity = ResponseEntity.ok(responseBody);
+
+        when(productService.deleteAllProducts()).thenReturn(mockResponseEntity);
+
+        MvcResult mvcResult = this.mockMvc.perform(delete("/api/v1/products")).
 		  andExpect(status().isOk()).
-		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).
-		  andExpect(jsonPath("$.<key>").value("<value>"));
+		  andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        // Get the response content as a String
+        String responseData = mvcResult.getResponse().getContentAsString();
+
+        JSONStringParser jsonStringParser = new JSONStringParser();
+        jsonStringParser.extract(responseData);
+
+        String key = jsonStringParser.getKey();
+        String value = jsonStringParser.getValue();
+
+        Assertions.assertTrue(responseBody.containsKey(key));
+        Assertions.assertTrue(responseBody.containsValue(value));
+        Assertions.assertEquals(responseBody.get(key), value);
+
+        verify(productService, times(1)).deleteAllProducts();
 	}
 
-	@Test
-	public void updateProduct() throws Exception {
-		this.mockMvc.perform(put("/api/v1/products/{productId}", "abc").content("abc").contentType(MediaType.APPLICATION_JSON_VALUE))
-			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-			.andExpect(jsonPath("$.id").value("<value>"))
-			.andExpect(jsonPath("$.name").value("<value>"))
-			.andExpect(jsonPath("$.description").value("<value>"))
-			.andExpect(jsonPath("$.price").value("<value>"))
-			.andExpect(jsonPath("$.createdDate").value("<value>"))
-			.andExpect(jsonPath("$.lastModifiedDate").value("<value>"));
+    @ParameterizedTest
+    @MethodSource("productData")
+	public void updateProduct(long productId, String name, String description, double price) throws Exception {
+        final String newDescription = "New description";
+        final double newPrice = 1000.0;
+
+        LocalDateTime createdDate = LocalDateTime.now();
+        Product existingProduct = new Product(name, description, price, createdDate, LocalDateTime.now());
+        existingProduct.setId(productId);
+        Product updatedProduct = new Product(name, newDescription, newPrice, createdDate, LocalDateTime.now());
+        updatedProduct.setId(productId);
+        ResponseEntity<Product> mockSaveResponse = new ResponseEntity<>(updatedProduct, HttpStatus.ACCEPTED);
+
+        productRepository.save(existingProduct);
+        when(productService.updateProduct(eq(productId), any(Product.class)))
+                .thenReturn(mockSaveResponse);
+
+		this.mockMvc.perform(put("/api/v1/products/{productId}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updatedProduct)))
+                .andExpect(status().isAccepted())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.id").value(updatedProduct.getId()))
+			.andExpect(jsonPath("$.name").value(updatedProduct.getName()))
+			.andExpect(jsonPath("$.description").value(updatedProduct.getDescription()))
+			.andExpect(jsonPath("$.price").value(updatedProduct.getPrice()));
 	}
 }

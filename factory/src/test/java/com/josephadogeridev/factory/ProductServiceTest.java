@@ -68,7 +68,7 @@ class ProductServiceTest {
         }
 
         //Assert
-        assertEquals(status.toString().trim(), "202 ACCEPTED".trim());
+        assertEquals(status.toString().trim(), "200 OK".trim());
         assertEquals(message, "Successfully deleted product with id: 8");
     }
 

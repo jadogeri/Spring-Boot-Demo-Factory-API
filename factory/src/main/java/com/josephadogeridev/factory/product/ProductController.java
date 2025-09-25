@@ -62,11 +62,11 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteProducts() {
+    public ResponseEntity<HashMap<String, String>> deleteProducts() {
         return this.productService.deleteAllProducts();
     }
 
-    @PutMapping(path = "{productId}")
+    @PutMapping(path = "{productId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<Product> updateProduct(
             @PathVariable("productId") String productId,
             @RequestBody Product product) throws Exception {
