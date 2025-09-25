@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@SuppressWarnings("unchecked")
 public class ProductService {
 
     private final ProductRepository productRepository;

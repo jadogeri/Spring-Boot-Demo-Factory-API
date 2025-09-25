@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errorDetails = new HashMap<>();
 
-        errorDetails.put("message", "Resource not found: " + ex.getMessage());
+        errorDetails.put("message", ex.getMessage());
         errorDetails.put("code", "RESOURCE_NOT_FOUND");
         errorDetails.put("url", request != null ? request.getRequestURI() : "" );
         errorDetails.put("method", request != null ? request.getMethod() : "");

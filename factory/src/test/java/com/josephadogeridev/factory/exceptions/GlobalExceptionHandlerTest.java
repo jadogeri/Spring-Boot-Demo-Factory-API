@@ -18,11 +18,10 @@ public class GlobalExceptionHandlerTest {
 		ResponseEntity<Map<String, String>> actual = (ResponseEntity<Map<String, String>>) g.handleResourceNotFoundException(ex);
 
 		      Assertions.assertTrue(actual.getBody().containsKey("message"));
-		      Assertions.assertFalse(actual.getBody().get("message").equals("abc"));
 		      Assertions.assertTrue(actual.getBody().get("code").equals("RESOURCE_NOT_FOUND"));
 		      Assertions.assertTrue(actual.getBody().get("url").equals(""));
 		      Assertions.assertTrue(actual.getBody().get("method").equals(""));
-		      Assertions.assertTrue(actual.getBody().get("message").equals("Resource not found: " + ex.getMessage()));
+		      Assertions.assertTrue(actual.getBody().get("message").equals(ex.getMessage()));
 
 	   }
 
