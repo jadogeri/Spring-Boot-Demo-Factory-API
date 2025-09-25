@@ -120,15 +120,15 @@ The system will allow users to:
 - **Test**: JUnit and TestContainers
 - **Plugins**: Early AI
 - **Container**: Docker
-- **Security**: JSON Web Token (JWT), Bcrypt and Nanoid
-- **Hosting**: Render.com
-- **Source Control**: Git and GitHub
+- **Version Control**: Git and GitHub
 - **CI/CD**: GitHub Actions
 - **Code Analsis**: SonarQube
+- **Documentation**: Swagger
+
 
 ### **3.3 Deployment Artifacts**
 
-- **Backend Application**: Appllicationcontains everyting to build and run Express application instance on Render.com or build a Docker image, and run a Docker container on Render.com
+- **Backend Application**: Appllicatio ncontains everyting to build and run Spring Boot instance 
 
 ---
 
@@ -138,67 +138,78 @@ The system will allow users to:
 
 | Entity | Description                                          |
 | ------ | ---------------------------------------------------- |
-| USER   | User account information used to authenticate users. |
-| AUTH   | Saves authentication information of Users.           |
+| PRODUCT   | product made in factory. |
+
 
 ---
 
 ## **5. Installation**
 
-* [Download and install NodeJS](https://nodejs.org/en/download)
+* [Download and install IntelliJ Community Edition](https://www.jetbrains.com/idea/download/?section=windows)
+* [Download and install Java](https://www.oracle.com/java/technologies/downloads/)
+* [Download and install Maven](https://maven.apache.org/download.cgi)
 * [Download and install Docker - Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
 * [Download and install Docker - Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
-* [Create MongoDB account and connection string](https://www.mongodb.com/docs/drivers/node/current/quick-start/)
-* [Create Google account](https://google.com/)
-* [Generate Google account App Password](https://support.google.com/mail/thread/205453566/how-to-generate-an-app-password?hl=en)
-* [Twilio Account - API for SMS (Optional)](https://www.twilio.com/en-us/messaging/programmable-messaging-api)
-* [PostMan - API Testing](https://www.postman.com/downloads/)
+
 
 ---
 
 ## **6. Usage**
 
-**Prerequisites** :installation of NodeJS and MongoDB atlas account
+**Prerequisites** :installation of Java, Docker and Maven.
 
 ### **6.1 Run Application**
 
-1 Open command prompt or terminal.
+0 open intelliJ IDE.
 
-2 Type command git clone https://github.com/jadogeri/ServerTemplate.git then press enter.
+1 Select option CLONE REPOSITORY .
 
-```bash
-  git clone https://github.com/jadogeri/ServerTemplate.git
-```
+2 Copy and paste url https://github.com/jadogeri/Spring-Boot-Demo-Factory-API.git and choose location to save project then press clone.
 
-3 Enter command cd ServerTemplate then press enter.
+ (Note!! choose empty folder : I created folder factoryAPI)
 
-```bash
-  cd ServerTemplate
-```
+![start application](assets/images/cloneProject.png)
+
 
 #### **6.1.1 Run Locally**
 
-1 Add .env file in project root directory and copy contents in .env.sample.
+0 Change view to Project
 
-2 Fill out connection_string with mongoDB atlas MONGODB_URI and create a secret phrase for JSON_WEB_TOKEN_SECRET.
+1 Navigate to factory --> src --> main -- java
 
-![env](assets/images/env.png)
+2 Inspect file FactoryApplication.java
 
-3 Type npm install to install dependencies.
+3 Press play button to start application.
 
-```bash
-  npm install
-```
-
-4 Type npm run dev to run server
-
-```bash
-  npm run dev
-```
-
-![env](assets/images/localoutput.png)
+![start application](assets/images/runApp.png)
 
 #### **6.1.2 Run Docker container**
+
+0 Build the Executable JAR:
+a) Command Line
+b) IntelliJ IDE
+
+
+a)  Command Line:
+  Navigate to the root directory of your project in the terminal.
+  Execute the Maven command to build the project and create an executable JAR file: 
+
+```bash
+  mvn clean package
+```
+![terminal](assets/images/terminal.png)
+
+
+b) IntelliJ IDE
+click on (m) logo on right side of IDE.
+Navigate to Factory --> LifeCycle then double click on clean --> double click on package.
+
+![IDE](assets/images/intellijide.png)
+
+
+
+
+
 
 1 Add Dockerfile file in project root directory and copy contents in .Dockerfile.sample.
 

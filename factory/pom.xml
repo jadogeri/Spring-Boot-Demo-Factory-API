@@ -117,15 +117,16 @@
 	<build>
 		<plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.0</version> <!-- Ensure this matches the version in your error -->
-                <configuration>
-                    <source>24</source> <!-- Set to your desired Java release version -->
-                    <target>24</target> <!-- Set to your desired Java release version -->
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-image</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 		</plugins>
 	</build>
-
 </project>
