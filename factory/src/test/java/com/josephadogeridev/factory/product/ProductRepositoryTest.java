@@ -1,7 +1,5 @@
-package com.josephadogeridev.factory;
+package com.josephadogeridev.factory.product;
 
-import com.josephadogeridev.factory.product.Product;
-import com.josephadogeridev.factory.product.ProductRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

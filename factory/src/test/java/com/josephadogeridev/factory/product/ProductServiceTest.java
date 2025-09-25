@@ -1,21 +1,15 @@
-package com.josephadogeridev.factory;
+package com.josephadogeridev.factory.product;
 
-import com.josephadogeridev.factory.product.Product;
-import com.josephadogeridev.factory.product.ProductRepository;
-import com.josephadogeridev.factory.product.ProductService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
