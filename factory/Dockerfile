@@ -1,14 +1,11 @@
-# Use an official Java runtime as a parent image
-FROM openjdk:11-jre-slim
-
-# Set the working directory in the container
-WORKDIR /app
-# Copy the project JAR file into the container
-COPY target/factory-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose the port your Spring Boot application listens on (optional, but good practice)
-EXPOSE 8080
-
-# Run the JAR file
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+    FROM eclipse-temurin:17-jdk-focal
+    VOLUME /tmp
+    ARG JAR_FILE=target/*.jar
+    COPY ${JAR_FILE} app.jar
+    # Ensure the 'data' directory exists and copy the H2 database file
+    RUN mkdir -p /data
+    COPY data/factoryDB.mv.db /data/factoryDB.mv.db
+    # Assuming the actual H2 file is factoryDB.mv.db
+    COPY data/factoryDB.trace.db /data/factoryDB.trace.db 
+    # If trace file exists
+    ENTRYPOINT ["java","-jar","/app.jar"]
