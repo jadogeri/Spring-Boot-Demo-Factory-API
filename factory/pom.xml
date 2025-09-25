@@ -116,8 +116,15 @@
     </dependencyManagement>
 	<build>
 		<plugins>
-
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version> <!-- Ensure this matches the version in your error -->
+                <configuration>
+                    <source>24</source> <!-- Set to your desired Java release version -->
+                    <target>24</target> <!-- Set to your desired Java release version -->
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
