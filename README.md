@@ -106,11 +106,6 @@ The system will allow users to:
 
 ---
 
-## **2. API Reference**
-
-* [Link to Documentation ](https://documenter.getpostman.com/view/40822092/2sAYXEEdwL)
-
-
 ### **3.2 Technology Stack**
 
 - **Programming Languages**: Java, SQL
@@ -183,92 +178,43 @@ The system will allow users to:
 
 ![start application](assets/images/runApp.png)
 
-#### **6.1.2 Run Docker container**
-
-0 Build the Executable JAR:
-a) Command Line
-b) IntelliJ IDE
-
-
-a)  Command Line:
-  Navigate to the root directory of your project in the terminal.
-  Execute the Maven command to build the project and create an executable JAR file: 
-
-```bash
-  mvn clean package
-```
-![terminal](assets/images/terminal.png)
-
-
-b) IntelliJ IDE
-click on (m) logo on right side of IDE.
-Navigate to Factory --> LifeCycle then double click on clean --> double click on package.
-
-![IDE](assets/images/intellijide.png)
-
-
-
-
-
-
-1 Add Dockerfile file in project root directory and copy contents in .Dockerfile.sample.
-
-2 Fill out connection string with mongoDB atlas MONGODB_URI and create a secret phrase for JSON_WEB_TOKEN_SECRET.
-
-![docker](assets/images/docker.png)
-
-3 Type docker build -t server-image . in command line to build docker image.
-
-```bash
-  docker build -t server-image .
-```
-
-![dockerbuild](assets/images/dockerimage.png)
-
-3 Type docker run --name server-container -d -it -p 6000:6000 server-image to create and start container immediately.
-
-```bash
-  docker run --name server-container -d -it -p 6000:6000 server-image
-```
-
-![dockerbuild](assets/images/dockerrun.png)
-
-4 Type docker stop server-container to stop container.
-
-```bash
-  docker stop server-container
-```
-
-5 Type docker start server-container to start container.
-
-```bash
-  docker start server-container
-```
 
 ## **7. API Testing**
 
 **Prerequisites** :ensure container or local application is running.
 
-**Note** : use `<a href="#2-api-reference">`API Reference`</a>` docs for testing endpoints.
+**Note** : use [http://localhost:8080/swagger-ui/index.html/](http://localhost:8080/swagger-ui/index.html) docs for testing endpoints.
 
-#### **7.1.1 Postman Environment Variables**
+![API Documentation](assets/images/swagger.png)
 
-![postmanenv](assets/images/postman_env.png)
 
 ---
 
 ## **8. Tests**
+Tests can be ran by the following means below
+1 Terminal
+2 IntelliJ IDE
 
-1. run test command below.
+
+1. Terminal
+
+1In the root of (factory directory), run command mvn test
 
 ```bash
-  npm run test
+  mvn test
 ```
 
-![tests](assets/images/tests.png)
+![tests-terminal](assets/images/tests.png)
 
 ---
 
+2. IntelliJ IDE
+1 Change folder structure to Tests
+2 Right click on project folder (factory) --> Navigate to More Run/Debug --> Run all Tests with Coverage
+
+| ![navigate to tests](assets/images/navigate-to-tests-coverage.png) | ![test results with coverage](assets/images/tests-coverage.png) |
+| -------------------------------------------- | -------------------------------------------- |
+|                                              |                                              |
 ## **9. License**
 
 [LICENSE](/LICENSE)
@@ -277,13 +223,9 @@ Navigate to Factory --> LifeCycle then double click on clean --> double click on
 
 ## **10. References**
 
-* FreeCodeCamp : [Frontend Web Development: (HTML, CSS, JavaScript, TypeScript, React)](https://www.youtube.com/watch?v=MsnQ5uepIa).
-* Dipesh Malvia : [Learn Node.js &amp; Express with Project in 2 Hours](https://www.youtube.com/watch?v=H9M02of22z4&t=140s).
-* AweSome Open Source : [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
-* Readme.so : [The easiest way to create a README](https://readme.so/)
-* Swagger :  [Swagger API Documentation](https://swagger.io/docs/)
-* Supertest :  [Guide to writing integration tests in express js with Jest and Supertest](https://dev.to/ali_adeku/guide-to-writing-integration-tests-in-express-js-with-jest-and-supertest-1059#:~:text=In%20the%20root%20directory%20of,all%20your%20integration%20test%20files)
-* MongoDB Memory Server Test Database : [Testing with MongoDB-Memory-Server ](https://dev.to/remrkabledev/testing-with-mongodb-memory-server-4ja2)
-* Unit Testing : [Unit tests in Jest with supertest, MongoDB and TypeScript](https://medium.com/@adammalej/unit-tests-in-jest-with-supertest-and-mongodb-e4d56e918ce8)
-* Mockingoose : [How to test mongoose models with jest and mockingoose](https://dev.to/darkmavis1980/how-to-test-mongoose-models-with-jest-and-mockingoose-2k10)
-* MongoDB Memory Server :  [MongoDB Memory Server tutorial in typescript](https://github.com/typegoose/mongodb-memory-server)
+* JUnit5 : [JUnit 5 User Guide](https://docs.junit.org/current/user-guide/).
+* Symflower : [Symflower feature overview](https://www.youtube.com/watch?v=17KKqlLNcTc).
+* TestContainers : [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
+* Swagger :  [Swagger API Documentation for Spring Boot 3](https://www.baeldung.com/spring-rest-openapi-documentation)
+* Medium : [Handling exceptions and error responses ](https://leejjon.medium.com/handling-exceptions-and-error-responses-in-java-rest-services-afda273c9d2f)
+* TutorialsPoint : [JUnit unit testing tool](https://www.tutorialspoint.com/junit/junit_basic_usage.htm)
