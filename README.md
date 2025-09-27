@@ -25,7 +25,7 @@ This is a template for Backend Application (Spring Boot) which stores Products.
 
 | ![Screenshot 1](assets/images/screenshot1.png) | ![screenshot 2](assets/images/screenshot2.png) |
 | -------------------------------------------- | -------------------------------------------- |
-|                                              |                                              |
+| ![Screenshot 1](assets/images/terminal.png) | ![screenshot 2](assets/images/swagger.png) |
 
 ## Table of Contents
 
