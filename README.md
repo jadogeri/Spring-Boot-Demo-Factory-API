@@ -3,6 +3,7 @@
 ## **Spring Boot Demo Factory API**
 
 **Version:** 1.0.0
+
 **Date:** September 25, 2025
 
 ---
@@ -13,7 +14,12 @@ This is a template for Backend Application (Spring Boot) which stores Products.
 
 ## Authors
 
-- [@jadogeri](https://www.github.com/jadogeri)
+[@jadogeri](https://www.github.com/jadogeri)
+
+## Repository
+
+[https://github.com/jadogeri/Spring-Boot-Demo-Factory-API.git](https://github.com/jadogeri/Spring-Boot-Demo-Factory-API)
+
 
 ## Screenshots
 
@@ -33,56 +39,41 @@ This is a template for Backend Application (Spring Boot) which stores Products.
     </li>
 </ul>
     <ul>
-      <li><a href="#2-api-reference">2. API Reference</a>
+      <li><a href="#2-technology-stack">2. Technology Stack</a>
       </li>
     </ul>
     <ul>
-      <li><a href="#3-system-architecture">3. System Architecture</a>
+      <li><a href="#3-data-design">3. Data Design</a>
         <ul>
-          <li><a href="#31-high-level-architecture">3.1 High Level Architecture</a> </li>
-          <li><a href="#32-technology-stack">3.2 Technology Stack</a> </li>
-          <li><a href="#33-deployment-artifacts">3.3 Deployment Artifacts</a> </li>
-        </ul>
-      </li>
-    </ul>
-    <ul>
-      <li><a href="#4-data-design">4. Data Design</a>
-        <ul>
-          <li><a href="#41-data-entities-and-relationships">4.1 Entities and Relationships</a> </li>
-          <li><a href="#42-database-conceptual-schema">4.2 Database Conceptual Schema</a> </li>
-          <li><a href="#33-deployment-artifacts">3.3 Deployment Artifacts</a> </li>
+          <li><a href="#31-data-entities-and-relationships">3.1 Entities and Relationships</a> </li>
         </ul>
       </li>
     </ul> 
     <ul>
-      <li><a href="#5-installation">5. Installation</a>
+      <li><a href="#4-installation">4. Installation</a>
       </li>
     </ul> 
     <ul>
-        <li><a href="#6-usage">6. Usage</a>
+        <li><a href="#5-usage">5. Usage</a>
         <ul>
-            <li><a href="#61-run-application">6.1 Run Application</a> </li>
-            <ul>
-              <li><a href="#611-run-locally">6.1.1 Run Locally</a> </li>
-              <li><a href="#612-run-docker-container">6.1.2 Run Docker Container</a> </li>
-            </ul>
+            <li><a href="#51-run-application">5.1 Run Application</a> </li>
         </ul>
         </li>
     </ul> 
     <ul>
-        <li><a href="#7-api-testing">7. API Testing</a>
+        <li><a href="#6-api-testing">6. API Testing</a>
         </li>
     </ul> 
     <ul>
-        <li><a href="#8-tests">8. Tests</a>
+        <li><a href="#7-tests">7. Tests</a>
         </li>
     </ul>  
     <ul>  
-        <li><a href="#9-license">9. License</a>
+        <li><a href="#8-license">8. License</a>
         </li>
     </ul> 
     <ul> 
-        <li><a href="#10-references">10. References</a>
+        <li><a href="#9-references">9. References</a>
         </li>
     <ul>
 
@@ -106,7 +97,7 @@ The system will allow users to:
 
 ---
 
-### **3.2 Technology Stack**
+## **2. Technology Stack**
 
 - **Programming Languages**: Java, SQL
 - **IDE**: IntelliJ and Visual Studio Code (VSCode)
@@ -121,15 +112,9 @@ The system will allow users to:
 - **Documentation**: Swagger
 
 
-### **3.3 Deployment Artifacts**
+## **3. Data Design**
 
-- **Backend Application**: Appllicatio ncontains everyting to build and run Spring Boot instance 
-
----
-
-## **4. Data Design**
-
-### **4.1 Data Entities and Relationships**
+### **3.1 Data Entities and Relationships**
 
 | Entity | Description                                          |
 | ------ | ---------------------------------------------------- |
@@ -138,7 +123,7 @@ The system will allow users to:
 
 ---
 
-## **5. Installation**
+## **4. Installation**
 
 * [Download and install IntelliJ Community Edition](https://www.jetbrains.com/idea/download/?section=windows)
 * [Download and install Java](https://www.oracle.com/java/technologies/downloads/)
@@ -146,82 +131,83 @@ The system will allow users to:
 * [Download and install Docker - Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
 * [Download and install Docker - Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
 
-
 ---
 
-## **6. Usage**
+## **5. Usage**
 
 **Prerequisites** :installation of Java, Docker and Maven.
 
-### **6.1 Run Application**
+### **5.1 Run Application**
 
 0 open intelliJ IDE.
 
-1 Select option CLONE REPOSITORY .
+1 Select option `CLONE REPOSITORY` .
 
-2 Copy and paste url https://github.com/jadogeri/Spring-Boot-Demo-Factory-API.git and choose location to save project then press clone.
+2 Copy and paste url `https://github.com/jadogeri/Spring-Boot-Demo-Factory-API.git` and choose location to save project then press clone.
 
  (Note!! choose empty folder : I created folder factoryAPI)
 
 ![start application](assets/images/cloneProject.png)
 
 
-#### **6.1.1 Run Locally**
+3 Change view to Project.
 
-0 Change view to Project
+4 Navigate to factory --> `src` --> `main` -- `java`.
 
-1 Navigate to factory --> src --> main -- java
+5 Inspect file `FactoryApplication.java`.
 
-2 Inspect file FactoryApplication.java
-
-3 Press play button to start application.
+6 Press play button to start application.
 
 ![start application](assets/images/runApp.png)
 
 
-## **7. API Testing**
+## **6. API Testing**
 
-**Prerequisites** :ensure container or local application is running.
+**Prerequisites** : Ensure container or local application is running.
 
-**Note** : use [http://localhost:8080/swagger-ui/index.html/](http://localhost:8080/swagger-ui/index.html) docs for testing endpoints.
+**Note** : Use [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) docs for testing endpoints.
 
 ![API Documentation](assets/images/swagger.png)
 
 
 ---
 
-## **8. Tests**
-Tests can be ran by the following means below
-1 Terminal
-2 IntelliJ IDE
+## **7. Tests**
+Tests can be ran by the following means below.
+<ol>
+  <li>Terminal</li>
+  <li>IntelliJ IDE </li>
+</ol>
+
+***1. Terminal***
 
 
-1. Terminal
-
-1In the root of (factory directory), run command mvn test
+1. In the root of (factory directory), run command mvn test.
 
 ```bash
   mvn test
 ```
 
-![tests-terminal](assets/images/tests.png)
+![tests-terminal](assets/images/tests-terminal.png)
 
 ---
 
-2. IntelliJ IDE
-1 Change folder structure to Tests
-2 Right click on project folder (factory) --> Navigate to More Run/Debug --> Run all Tests with Coverage
+***2. IntelliJ IDE***
+
+
+1 Change folder structure to Tests.
+2 Right click on project folder (factory) --> `Navigate to More Run/Debug` --> `Run all Tests with Coverage`.
 
 | ![navigate to tests](assets/images/navigate-to-tests-coverage.png) | ![test results with coverage](assets/images/tests-coverage.png) |
 | -------------------------------------------- | -------------------------------------------- |
 |                                              |                                              |
-## **9. License**
+## **8. License**
 
 [LICENSE](/LICENSE)
 
 ---
 
-## **10. References**
+## **9. References**
 
 * JUnit5 : [JUnit 5 User Guide](https://docs.junit.org/current/user-guide/).
 * Symflower : [Symflower feature overview](https://www.youtube.com/watch?v=17KKqlLNcTc).
